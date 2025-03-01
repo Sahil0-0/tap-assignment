@@ -1,5 +1,6 @@
 import 'package:bonds/models/company_details_bond.dart';
 import 'package:bonds/pages/company_bond_details/companyDetailsController.dart';
+import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -88,7 +89,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                 ),
                               ),
                               child: Text(
-                                'ISIN: ${company.isin ?? 'N/A'}',
+                                'ISIN: ${company.isin ?? ''}',
                                 style: const TextStyle(
                                     fontSize: 10,
                                     fontWeight: FontWeight.w600,
@@ -137,11 +138,338 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                       ],
                     ),
                   ),
+                  const SizedBox(
+                    height: 12,
+                  ),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: _buildTabContent(company),
+                  ),
+                  const SizedBox(
+                    height: 12,
+                  ),
                 ],
               ),
             );
           }
         },
+      ),
+    );
+  }
+
+  Widget _buildTabContent(dynamic company) {
+    if (_selectedTabIndex == 0) {
+      return Column(
+        children: [
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border:
+                  Border.all(color: Colors.grey.withOpacity(0.5), width: 0.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(16),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        "COMPANY FINANCIALS",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffA3A3A3),
+                            letterSpacing: 1.2),
+                      ),
+                      Text(
+                        "COMPANY FINANCIALS",
+                        style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffA3A3A3),
+                            letterSpacing: 1.2),
+                      ),
+                    ],
+                  ),
+                ),
+                _buildBarChart(),
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 24,
+          ),
+          Container(
+            width: double.infinity,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border:
+                  Border.all(color: Colors.grey.withOpacity(0.5), width: 0.5),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: const BorderRadius.only(
+                        topLeft: Radius.circular(12),
+                        topRight: Radius.circular(12)),
+                    border: Border(
+                      bottom: BorderSide(
+                          color: Colors.grey.withOpacity(0.5), width: 0.5),
+                    ),
+                  ),
+                  child: const Text(
+                    'Issuer Details',
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xff020617),
+                    ),
+                  ),
+                ),
+                Container(
+                  padding:
+                      const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+                  child: Column(),
+                )
+              ],
+            ),
+          ),
+        ],
+      );
+    } else {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.withOpacity(0.5), width: 0.5),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              padding: const EdgeInsets.only(bottom: 16),
+              child: const Text(
+                "Pros and Cons",
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff020617),
+                ),
+              ),
+            ),
+            const SizedBox(
+              width: 8,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Pros',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xff15803D),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (company.prosAndCons?.pros != null)
+                      ...company.prosAndCons!.pros.map(
+                        (pro) => Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 24,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset('assets/icons/TickIcon.svg'),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  pro,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff364153),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                const Text(
+                  'Cons',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                    color: Color(0xffB45309),
+                  ),
+                ),
+                const SizedBox(
+                  height: 16,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (company.prosAndCons?.cons != null)
+                      ...company.prosAndCons!.cons.map(
+                        (con) => Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 24,
+                          ),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              SvgPicture.asset('assets/icons/ExclaimIcon.svg'),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              Expanded(
+                                child: Text(
+                                  con,
+                                  style: const TextStyle(
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                    color: Color(0xff364153),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ],
+            )
+          ],
+        ),
+      );
+    }
+  }
+
+  Widget _buildBarChart() {
+    return SizedBox(
+      height: 200,
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+        child: BarChart(
+          BarChartData(
+            alignment: BarChartAlignment.spaceBetween,
+            maxY: 3,
+            titlesData: FlTitlesData(
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 20,
+                  getTitlesWidget: (value, meta) {
+                    switch (value.toInt()) {
+                      case 1:
+                        return const Text(
+                          '₹1L',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffA3A3A3),
+                          ),
+                        );
+                      case 2:
+                        return const Text(
+                          '₹2L',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffA3A3A3),
+                          ),
+                        );
+                      case 3:
+                        return const Text(
+                          '₹3L',
+                          style: TextStyle(
+                            fontSize: 8,
+                            fontWeight: FontWeight.w600,
+                            color: Color(0xffA3A3A3),
+                          ),
+                        );
+                      default:
+                        return Container();
+                    }
+                  },
+                ),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  getTitlesWidget: (double value, TitleMeta meta) {
+                    const months = [
+                      'J',
+                      'F',
+                      'M',
+                      'A',
+                      'M',
+                      'J',
+                      'J',
+                      'A',
+                      'S',
+                      'O',
+                      'N',
+                      'D'
+                    ];
+                    return Text(
+                      months[value.toInt()],
+                      style: const TextStyle(
+                          fontSize: 12, fontWeight: FontWeight.w500),
+                    );
+                  },
+                ),
+              ),
+              topTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+              rightTitles: const AxisTitles(
+                sideTitles: SideTitles(showTitles: false),
+              ),
+            ),
+            barGroups: List.generate(12, (index) {
+              return BarChartGroupData(
+                x: index,
+                barRods: [
+                  BarChartRodData(
+                    toY: 1,
+                    color: Colors.black,
+                    width: 10,
+                  ),
+                  BarChartRodData(
+                    toY: 1.5,
+                    color: Colors.blue.withOpacity(0.3),
+                    width: 10,
+                  ),
+                ],
+              );
+            }),
+          ),
+        ),
       ),
     );
   }
@@ -170,11 +498,11 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
         child: Text(
           title,
           style: TextStyle(
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
+            fontSize: 12,
+            fontWeight: FontWeight.w500,
             color: _selectedTabIndex == index
                 ? const Color(0xff2563EB)
-                : Colors.grey,
+                : const Color(0xff4A5565),
           ),
         ),
       ),
