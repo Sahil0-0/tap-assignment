@@ -1,4 +1,3 @@
-import 'package:bonds/models/company_model.dart';
 import 'package:bonds/pages/homepage/companyController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -28,6 +27,7 @@ class _HomepageState extends State<Homepage> {
       backgroundColor: const Color(0xffF3F4F6),
       appBar: AppBar(
         backgroundColor: const Color(0xffF3F4F6),
+        scrolledUnderElevation: 0,
         title: const Text(
           'Home',
           style: TextStyle(fontSize: 26, fontWeight: FontWeight.w600),
@@ -115,14 +115,13 @@ class _HomepageState extends State<Homepage> {
         border: Border.all(color: const Color(0xFFE5E7EB), width: 1),
       ),
       child: ListView.builder(
+        padding: EdgeInsets.zero,
         itemCount: controller.filteredCompanies.length,
         itemBuilder: (context, index) {
           final company = controller.filteredCompanies[index];
           return ListTile(
-            contentPadding:
-                const EdgeInsets.symmetric(horizontal: 16, vertical: 0),
+            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             visualDensity: VisualDensity.compact,
-            minVerticalPadding: 0,
             leading: Container(
               width: 40,
               height: 40,
@@ -148,7 +147,7 @@ class _HomepageState extends State<Homepage> {
                 RichText(
                   text: TextSpan(
                     children: highlightSearchText(
-                        company.rating, controller.searchQuery, 'company_name'),
+                        company.rating, controller.searchQuery, 'ratings'),
                   ),
                 ),
                 const Text(
@@ -176,48 +175,39 @@ class _HomepageState extends State<Homepage> {
 
   List<TextSpan> highlightSearchText(
       String text, String query, String valueType) {
-    if (query.isEmpty && valueType == 'Isin') {
-      return [
-        TextSpan(
-          children: [
-            TextSpan(
-              text: text.substring(0, 8),
-              style: const TextStyle(
-                color: Color(0xFF6A7282),
-                fontWeight: FontWeight.w500,
-                fontSize: 12,
-              ),
-            ),
-            TextSpan(
-              text: text.substring(8),
-              style: const TextStyle(
-                color: Color(0xff1E2939),
-                fontWeight: FontWeight.w500,
-                fontSize: 14,
-              ),
-            ),
-          ],
-        ),
-      ];
-    } else if (query.isEmpty && valueType == 'company_name' ||
-        valueType == 'company_name') {
-      return [
-        TextSpan(
-          text: text,
-          style: const TextStyle(
-            color: Color(0xFF99A1AF),
-            fontSize: 10,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-      ];
-    }
-
     final matches = RegExp(query, caseSensitive: false).allMatches(text);
-    if (matches.isEmpty) {
-      return [
-        TextSpan(text: text, style: const TextStyle(color: Colors.black))
-      ];
+    if (query.isEmpty || matches.isEmpty) {
+      if (valueType == 'Isin') {
+        return [
+          TextSpan(
+            text: text.substring(0, 8),
+            style: const TextStyle(
+              color: Color(0xFF6A7282),
+              fontWeight: FontWeight.w500,
+              fontSize: 12,
+            ),
+          ),
+          TextSpan(
+            text: text.substring(8),
+            style: const TextStyle(
+              color: Color(0xff1E2939),
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
+            ),
+          ),
+        ];
+      } else {
+        return [
+          TextSpan(
+            text: text,
+            style: const TextStyle(
+              color: Color(0xFF99A1AF),
+              fontSize: 10,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+        ];
+      }
     }
 
     List<TextSpan> spans = [];
@@ -225,29 +215,51 @@ class _HomepageState extends State<Homepage> {
 
     for (var match in matches) {
       if (match.start > start) {
-        spans.add(TextSpan(
-          text: text.substring(start, match.start),
-          style: const TextStyle(color: Colors.black),
-        ));
+        spans.add(
+          TextSpan(
+            text: text.substring(start, match.start),
+            style: TextStyle(
+              color: valueType == 'Isin'
+                  ? const Color(0xFF1E2939)
+                  : const Color(0xFF99A1AF),
+              fontWeight:
+                  valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
+              fontSize: valueType == 'Isin' ? 12 : 10,
+            ),
+          ),
+        );
       }
 
-      spans.add(TextSpan(
-        text: text.substring(match.start, match.end),
-        style: const TextStyle(
-          color: Colors.white,
-          backgroundColor: Colors.orange,
-          fontWeight: FontWeight.bold,
+      spans.add(
+        TextSpan(
+          text: text.substring(match.start, match.end),
+          style: TextStyle(
+            color: valueType == 'Isin'
+                ? const Color(0xFF1E2939)
+                : const Color(0xFF99A1AF),
+            backgroundColor: Colors.orange.withOpacity(0.25),
+            fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
+            fontSize: valueType == 'Isin' ? 12 : 10,
+          ),
         ),
-      ));
+      );
 
       start = match.end;
     }
 
     if (start < text.length) {
-      spans.add(TextSpan(
-        text: text.substring(start),
-        style: const TextStyle(color: Colors.black),
-      ));
+      spans.add(
+        TextSpan(
+          text: text.substring(start),
+          style: TextStyle(
+            color: valueType == 'Isin'
+                ? const Color(0xFF1E2939)
+                : const Color(0xFF99A1AF),
+            fontSize: valueType == 'Isin' ? 12 : 10,
+            fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
+          ),
+        ),
+      );
     }
 
     return spans;
