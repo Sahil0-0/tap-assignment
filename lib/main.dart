@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 void main() {
   runApp(
     ChangeNotifierProvider(
-      create: (context) => CompanyController(), // Initialize CompanyController
+      create: (context) => CompanyController(),
       child: const MyApp(),
     ),
   );

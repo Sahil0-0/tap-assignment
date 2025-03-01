@@ -1,3 +1,4 @@
+import 'package:bonds/pages/company_bond_details/companyDetailsPage.dart';
 import 'package:bonds/pages/homepage/companyController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -109,6 +110,7 @@ class _HomepageState extends State<Homepage> {
     }
 
     return Container(
+      padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -120,6 +122,7 @@ class _HomepageState extends State<Homepage> {
         itemBuilder: (context, index) {
           final company = controller.filteredCompanies[index];
           return ListTile(
+            minLeadingWidth: 0,
             contentPadding: const EdgeInsets.symmetric(horizontal: 16),
             visualDensity: VisualDensity.compact,
             leading: Container(
@@ -167,6 +170,14 @@ class _HomepageState extends State<Homepage> {
               color: Color(0xff1447E6),
               size: 10,
             ),
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const CompanyDetailsPage(),
+                ),
+              );
+            },
           );
         },
       ),
