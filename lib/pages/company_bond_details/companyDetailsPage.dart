@@ -157,6 +157,237 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
     );
   }
 
+  Column issuerDetails(company) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: const BorderRadius.only(
+                topLeft: Radius.circular(12), topRight: Radius.circular(12)),
+            border: Border(
+              bottom:
+                  BorderSide(color: Colors.grey.withOpacity(0.5), width: 0.5),
+            ),
+          ),
+          child: const Text(
+            'Issuer Details',
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w500,
+              color: Color(0xff020617),
+            ),
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              //Issue Name
+              const Text(
+                'Issue Name',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.issuerName ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+              const SizedBox(
+                height: 30,
+              ),
+
+              //Type of Issuer
+              const Text(
+                'Type of Issuer',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.typeOfIssuer ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              //Sector
+              const Text(
+                'Sector',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.sector ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 32,
+              ),
+
+              //Issuer naturer
+              const Text(
+                'Issuer Nature',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.issuerNature ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              //cin
+              const Text(
+                'Corporate Identity Number (CIN)',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.cin ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 32,
+              ),
+
+              //Lead Manager
+              const Text(
+                'Name of the lead Manager',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.leadManager ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              //Registrar
+              const Text(
+                'Registrar',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.registrar ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+
+              const SizedBox(
+                height: 30,
+              ),
+
+              //Name of Debenture Trustee
+              const Text(
+                'Name of Debenture Trustee',
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff1D4ED8),
+                ),
+              ),
+              const SizedBox(
+                height: 6,
+              ),
+              Text(
+                company.issuerDetails!.debentureTrustee ?? '',
+                style: const TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Color(0xff111827),
+                ),
+              ),
+            ],
+          ),
+        )
+      ],
+    );
+  }
+
   Widget _buildTabContent(dynamic company) {
     if (_selectedTabIndex == 0) {
       return Column(
@@ -211,38 +442,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
               border:
                   Border.all(color: Colors.grey.withOpacity(0.5), width: 0.5),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12)),
-                    border: Border(
-                      bottom: BorderSide(
-                          color: Colors.grey.withOpacity(0.5), width: 0.5),
-                    ),
-                  ),
-                  child: const Text(
-                    'Issuer Details',
-                    style: TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xff020617),
-                    ),
-                  ),
-                ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 28, horizontal: 16),
-                  child: Column(),
-                )
-              ],
-            ),
+            child: issuerDetails(company),
           ),
         ],
       );
