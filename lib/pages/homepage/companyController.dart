@@ -9,16 +9,15 @@ class CompanyController extends ChangeNotifier {
   List<CompanyBond> _allCompanies = [];
   List<CompanyBond> _filteredCompanies = [];
   String _searchQuery = '';
-  bool _isLoading = false;
+  bool isLoading = false;
   String? _errorMessage;
 
   List<CompanyBond> get filteredCompanies => _filteredCompanies;
-  bool get isLoading => _isLoading;
   String? get errorMessage => _errorMessage;
   String get searchQuery => _searchQuery;
 
   Future<void> fetchCompanies() async {
-    _isLoading = true;
+    isLoading = true;
     _errorMessage = null;
     notifyListeners();
 
@@ -37,22 +36,23 @@ class CompanyController extends ChangeNotifier {
       _errorMessage = 'Error: $e';
     }
 
-    _isLoading = false;
+    isLoading = false;
     notifyListeners();
   }
 
   void updateSearchQuery(String query) {
     _searchQuery = query;
+    _filteredCompanies.clear();
+
     if (query.isEmpty) {
       _filteredCompanies = List.from(_allCompanies);
     } else {
-      _filteredCompanies = _allCompanies
-          .where((company) =>
-              company.company_name
-                  .toLowerCase()
-                  .contains(query.toLowerCase()) ||
-              company.isin.toLowerCase().contains(query.toLowerCase()))
-          .toList();
+      List<String> searchWords = query.toLowerCase().split(' ');
+      _filteredCompanies = _allCompanies.where((company) {
+        return searchWords.every((word) =>
+            company.company_name.toLowerCase().contains(word) ||
+            company.isin.toLowerCase().contains(word));
+      }).toList();
     }
     notifyListeners();
   }

@@ -15,9 +15,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
-    Future.microtask(() =>
-        Provider.of<CompanyController>(context, listen: false)
-            .fetchCompanies());
+    Future.microtask(() => Provider.of<CompanyController>(context, listen: false).fetchCompanies());
   }
 
   @override
@@ -51,7 +49,17 @@ class _HomepageState extends State<Homepage> {
               ),
             ),
             const SizedBox(height: 10),
-            Expanded(child: companyList(companyController)),
+            GestureDetector(
+              child: companyList(companyController),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const CompanyDetailsPage(),
+                  ),
+                );
+              },
+            )
           ],
         ),
       ),
@@ -61,6 +69,9 @@ class _HomepageState extends State<Homepage> {
   Widget searchBar(CompanyController controller) {
     return TextField(
       onChanged: controller.updateSearchQuery,
+      cursorColor: const Color.fromRGBO(0, 0, 0, 1),
+      cursorHeight: 12,
+      cursorWidth: 1,
       style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
       decoration: InputDecoration(
         isDense: true,
@@ -72,8 +83,7 @@ class _HomepageState extends State<Homepage> {
         hintStyle: const TextStyle(color: Color(0xFF9CA3AF), fontSize: 12),
         filled: true,
         fillColor: Colors.white,
-        contentPadding:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+        contentPadding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(10),
           borderSide: BorderSide.none,
@@ -98,7 +108,11 @@ class _HomepageState extends State<Homepage> {
 
   Widget companyList(CompanyController controller) {
     if (controller.isLoading) {
-      return const Center(child: CircularProgressIndicator());
+      return const Expanded(
+        child: Center(
+          child: CircularProgressIndicator(),
+        ),
+      );
     }
 
     if (controller.errorMessage != null) {
@@ -109,7 +123,9 @@ class _HomepageState extends State<Homepage> {
       return const Center(child: Text('No results found.'));
     }
 
-    return Container(
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 150),
+      height: (controller.filteredCompanies.length * 70.0).clamp(0, MediaQuery.of(context).size.height * 0.7),
       padding: const EdgeInsets.symmetric(vertical: 6),
       decoration: BoxDecoration(
         color: Colors.white,
@@ -121,72 +137,71 @@ class _HomepageState extends State<Homepage> {
         itemCount: controller.filteredCompanies.length,
         itemBuilder: (context, index) {
           final company = controller.filteredCompanies[index];
-          return ListTile(
-            minLeadingWidth: 0,
-            contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-            visualDensity: VisualDensity.compact,
-            leading: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(color: const Color(0xFFE5E7EB), width: 0.4),
-              ),
-              child: ClipOval(
-                child: Padding(
-                  padding: const EdgeInsets.all(5.0),
-                  child: Image.network(company.logo, fit: BoxFit.fill),
+          return Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: ListTile(
+              minLeadingWidth: 0,
+              minTileHeight: 0,
+              minVerticalPadding: 0,
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
+              visualDensity: VisualDensity.compact,
+              leading: Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(color: const Color(0xFFE5E7EB), width: 0.4),
                 ),
-              ),
-            ),
-            title: RichText(
-              text: TextSpan(
-                children: highlightSearchText(
-                    company.isin, controller.searchQuery, 'Isin'),
-              ),
-            ),
-            subtitle: Row(
-              children: [
-                RichText(
-                  text: TextSpan(
-                    children: highlightSearchText(
-                        company.rating, controller.searchQuery, 'ratings'),
+                child: ClipOval(
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Image.network(
+                      company.logo,
+                      fit: BoxFit.fill,
+                    ),
                   ),
                 ),
-                const Text(
-                  ' \u2022 ',
-                  style: TextStyle(color: Color(0xFF99A1AF), fontSize: 10),
+              ),
+              title: RichText(
+                text: TextSpan(
+                  children: highlightSearchText(company.isin, controller.searchQuery, 'Isin'),
                 ),
-                RichText(
-                  text: TextSpan(
-                    children: highlightSearchText(company.company_name,
-                        controller.searchQuery, 'company_name'),
-                  ),
+              ),
+              subtitle: Padding(
+                padding: const EdgeInsets.only(top: 2),
+                child: Row(
+                  children: [
+                    RichText(
+                      text: TextSpan(
+                        children: highlightSearchText(company.rating, controller.searchQuery, 'ratings'),
+                      ),
+                    ),
+                    const Text(
+                      ' \u2022 ',
+                      style: TextStyle(color: Color(0xFF99A1AF), fontSize: 10),
+                    ),
+                    RichText(
+                      text: TextSpan(
+                        children: highlightSearchText(company.company_name, controller.searchQuery, 'company_name'),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
+              ),
+              trailing: const Icon(
+                Icons.arrow_forward_ios,
+                color: Color(0xff1447E6),
+                size: 10,
+              ),
             ),
-            trailing: const Icon(
-              Icons.arrow_forward_ios,
-              color: Color(0xff1447E6),
-              size: 10,
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const CompanyDetailsPage(),
-                ),
-              );
-            },
           );
         },
       ),
     );
   }
 
-  List<TextSpan> highlightSearchText(
-      String text, String query, String valueType) {
-    final matches = RegExp(query, caseSensitive: false).allMatches(text);
+  List<TextSpan> highlightSearchText(String text, String query, String valueType) {
+    final matches = RegExp(query.trim(), caseSensitive: false).allMatches(text.trim());
     if (query.isEmpty || matches.isEmpty) {
       if (valueType == 'Isin') {
         return [
@@ -230,11 +245,8 @@ class _HomepageState extends State<Homepage> {
           TextSpan(
             text: text.substring(start, match.start),
             style: TextStyle(
-              color: valueType == 'Isin'
-                  ? const Color(0xFF1E2939)
-                  : const Color(0xFF99A1AF),
-              fontWeight:
-                  valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
+              color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
+              fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
               fontSize: valueType == 'Isin' ? 12 : 10,
             ),
           ),
@@ -245,10 +257,8 @@ class _HomepageState extends State<Homepage> {
         TextSpan(
           text: text.substring(match.start, match.end),
           style: TextStyle(
-            color: valueType == 'Isin'
-                ? const Color(0xFF1E2939)
-                : const Color(0xFF99A1AF),
-            backgroundColor: Colors.orange.withOpacity(0.25),
+            color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
+            backgroundColor: Colors.orange.withOpacity(0.15),
             fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
             fontSize: valueType == 'Isin' ? 12 : 10,
           ),
@@ -263,9 +273,7 @@ class _HomepageState extends State<Homepage> {
         TextSpan(
           text: text.substring(start),
           style: TextStyle(
-            color: valueType == 'Isin'
-                ? const Color(0xFF1E2939)
-                : const Color(0xFF99A1AF),
+            color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
             fontSize: valueType == 'Isin' ? 12 : 10,
             fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
           ),
