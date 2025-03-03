@@ -15,6 +15,7 @@ class _HomepageState extends State<Homepage> {
   @override
   void initState() {
     super.initState();
+    // ignore: use_build_context_synchronously
     Future.microtask(() => Provider.of<CompanyController>(context, listen: false).fetchCompanies());
   }
 
@@ -138,60 +139,77 @@ class _HomepageState extends State<Homepage> {
         itemBuilder: (context, index) {
           final company = controller.filteredCompanies[index];
           return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: ListTile(
-              minLeadingWidth: 0,
-              minTileHeight: 0,
-              minVerticalPadding: 0,
-              contentPadding: const EdgeInsets.symmetric(horizontal: 16),
-              visualDensity: VisualDensity.compact,
-              leading: Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFFE5E7EB), width: 0.4),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                vertical: 16,
+              ),
+              decoration: BoxDecoration(
+                  border: index < controller.filteredCompanies.length - 1 && controller.searchQuery != ''
+                      ? const Border(
+                          bottom: BorderSide(
+                            color: Color(0xFFE5E7EB),
+                            width: 0.4,
+                          ),
+                        )
+                      : null),
+              child: ListTile(
+                contentPadding: const EdgeInsets.symmetric(
+                  vertical: 0,
+                  horizontal: 0,
                 ),
-                child: ClipOval(
-                  child: Padding(
-                    padding: const EdgeInsets.all(5.0),
-                    child: Image.network(
-                      company.logo,
-                      fit: BoxFit.fill,
+                minLeadingWidth: 0,
+                minTileHeight: 0,
+                minVerticalPadding: 0,
+                visualDensity: VisualDensity.compact,
+                leading: Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(color: const Color(0xFFE5E7EB), width: 0.4),
+                  ),
+                  child: ClipOval(
+                    child: Padding(
+                      padding: const EdgeInsets.all(5.0),
+                      child: Image.network(
+                        company.logo,
+                        fit: BoxFit.fill,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              title: RichText(
-                text: TextSpan(
-                  children: highlightSearchText(company.isin, controller.searchQuery, 'Isin'),
+                title: RichText(
+                  text: TextSpan(
+                    children: highlightSearchText(company.isin, controller.searchQuery, 'Isin'),
+                  ),
                 ),
-              ),
-              subtitle: Padding(
-                padding: const EdgeInsets.only(top: 2),
-                child: Row(
-                  children: [
-                    RichText(
-                      text: TextSpan(
-                        children: highlightSearchText(company.rating, controller.searchQuery, 'ratings'),
+                subtitle: Padding(
+                  padding: const EdgeInsets.only(top: 2),
+                  child: Row(
+                    children: [
+                      RichText(
+                        text: TextSpan(
+                          children: highlightSearchText(company.rating, controller.searchQuery, 'ratings'),
+                        ),
                       ),
-                    ),
-                    const Text(
-                      ' \u2022 ',
-                      style: TextStyle(color: Color(0xFF99A1AF), fontSize: 10),
-                    ),
-                    RichText(
-                      text: TextSpan(
-                        children: highlightSearchText(company.company_name, controller.searchQuery, 'company_name'),
+                      const Text(
+                        ' \u2022 ',
+                        style: TextStyle(color: Color(0xFF99A1AF), fontSize: 10),
                       ),
-                    ),
-                  ],
+                      RichText(
+                        text: TextSpan(
+                          children: highlightSearchText(company.company_name, controller.searchQuery, 'company_name'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              trailing: const Icon(
-                Icons.arrow_forward_ios,
-                color: Color(0xff1447E6),
-                size: 10,
+                trailing: const Icon(
+                  Icons.arrow_forward_ios,
+                  color: Color(0xff1447E6),
+                  size: 10,
+                ),
               ),
             ),
           );
@@ -201,15 +219,15 @@ class _HomepageState extends State<Homepage> {
   }
 
   List<InlineSpan> highlightSearchText(String text, String query, String valueType) {
-    if (query.isEmpty) {
+    if (query.isEmpty || query == '') {
       return [_normalTextSpan(text, valueType)];
     }
 
-    List<String> searchWords = query.toLowerCase().split(' ');
+    List<String> searchWords = query.toLowerCase().split(RegExp(r'\s+')).where((word) => word.isNotEmpty).toList();
+
     List<InlineSpan> spans = [];
     int start = 0;
 
-   
     List<RegExpMatch> allMatches = [];
     for (String word in searchWords) {
       allMatches.addAll(RegExp(RegExp.escape(word), caseSensitive: false).allMatches(text));
@@ -236,7 +254,6 @@ class _HomepageState extends State<Homepage> {
     return spans;
   }
 
-
   TextSpan _normalTextSpan(String text, String valueType) {
     return TextSpan(
       text: text,
@@ -253,7 +270,7 @@ class _HomepageState extends State<Homepage> {
       alignment: PlaceholderAlignment.middle,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 2,
+          horizontal: 3,
         ),
         margin: const EdgeInsets.symmetric(horizontal: 2),
         decoration: BoxDecoration(

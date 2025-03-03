@@ -8,13 +8,13 @@ class CompanyController extends ChangeNotifier {
 
   List<CompanyBond> _allCompanies = [];
   List<CompanyBond> _filteredCompanies = [];
-  String _searchQuery = '';
+  String searchQuery = '';
   bool isLoading = false;
+  bool isSearching = false;
   String? _errorMessage;
 
   List<CompanyBond> get filteredCompanies => _filteredCompanies;
   String? get errorMessage => _errorMessage;
-  String get searchQuery => _searchQuery;
 
   Future<void> fetchCompanies() async {
     isLoading = true;
@@ -41,19 +41,20 @@ class CompanyController extends ChangeNotifier {
   }
 
   void updateSearchQuery(String query) {
-    _searchQuery = query;
+    searchQuery = query;
     _filteredCompanies.clear();
 
     if (query.isEmpty) {
       _filteredCompanies = List.from(_allCompanies);
     } else {
+      isSearching = true;
       List<String> searchWords = query.toLowerCase().split(' ');
       _filteredCompanies = _allCompanies.where((company) {
-        return searchWords.every((word) =>
-            company.company_name.toLowerCase().contains(word) ||
-            company.isin.toLowerCase().contains(word));
+        return searchWords.every(
+            (word) => company.company_name.toLowerCase().contains(word) || company.isin.toLowerCase().contains(word));
       }).toList();
     }
+
     notifyListeners();
   }
 }

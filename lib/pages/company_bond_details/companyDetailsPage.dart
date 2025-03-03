@@ -446,7 +446,9 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                     style: TextStyle(
                                       fontSize: 10,
                                       fontWeight: FontWeight.w500,
-                                      color: selectedOption == "EBITDA" ? Color(0xff171717) : Color(0xff737373),
+                                      color: selectedOption == "EBITDA"
+                                          ? const Color(0xff171717)
+                                          : const Color(0xff737373),
                                     ),
                                   ),
                                 ),
@@ -718,7 +720,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   BarChartRodData(
                     fromY: 0,
                     toY: _isAnimated ? 1 : 0,
-                    color: Colors.black,
+                    color: const Color(0xff101828),
                     width: 10,
                     borderRadius: const BorderRadius.only(
                       bottomLeft: Radius.circular(2),
@@ -728,7 +730,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   BarChartRodData(
                     fromY: 0,
                     toY: _isAnimated ? 1.75 : 0,
-                    color: Colors.blue.withOpacity(0.3),
+                    color: Color(0xff155DFC).withOpacity(0.2),
                     width: 10,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(2),
@@ -749,6 +751,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 ),
               ],
             ),
+            barTouchData: BarTouchData(enabled: false),
           ),
         ),
       ),
@@ -848,7 +851,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                   BarChartRodData(
                     fromY: 0,
                     toY: _isAnimated ? 1.75 : 0,
-                    color: Colors.blue.withOpacity(0.3),
+                    color: const Color(0xff155DFC),
                     width: 10,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(2),
@@ -859,6 +862,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 groupVertically: true,
               );
             }),
+            barTouchData: BarTouchData(enabled: false),
           ),
         ),
       ),
