@@ -109,10 +109,8 @@ class _HomepageState extends State<Homepage> {
 
   Widget companyList(CompanyController controller) {
     if (controller.isLoading) {
-      return const Expanded(
-        child: Center(
-          child: CircularProgressIndicator(),
-        ),
+      return const Center(
+        child: CircularProgressIndicator(),
       );
     }
 
@@ -149,7 +147,7 @@ class _HomepageState extends State<Homepage> {
                       ? const Border(
                           bottom: BorderSide(
                             color: Color(0xFFE5E7EB),
-                            width: 0.4,
+                            width: 0.5,
                           ),
                         )
                       : null),
