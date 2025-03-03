@@ -423,7 +423,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                             color: const Color(0xffF5F5F5),
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          padding: const EdgeInsets.all(4),
+                          padding: const EdgeInsets.all(2),
                           child: Row(
                             children: [
                               GestureDetector(
@@ -436,19 +436,21 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                   padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                                   decoration: BoxDecoration(
                                     color: selectedOption == "EBITDA" ? Colors.white : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: const BorderRadius.only(
+                                      topLeft: Radius.circular(20),
+                                      bottomLeft: Radius.circular(20),
+                                    ),
                                   ),
                                   child: Text(
                                     "EBITDA",
                                     style: TextStyle(
                                       fontSize: 10,
-                                      fontWeight: FontWeight.w600,
-                                      color: selectedOption == "EBITDA" ? Colors.black : Colors.grey,
+                                      fontWeight: FontWeight.w500,
+                                      color: selectedOption == "EBITDA" ? Color(0xff171717) : Color(0xff737373),
                                     ),
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 4),
                               GestureDetector(
                                 onTap: () {
                                   setState(() {
@@ -456,16 +458,19 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                   });
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  padding: const EdgeInsets.fromLTRB(6, 3, 8, 3),
                                   decoration: BoxDecoration(
                                     color: selectedOption == "Revenue" ? Colors.white : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(16),
+                                    borderRadius: const BorderRadius.only(
+                                      topRight: Radius.circular(20),
+                                      bottomRight: Radius.circular(20),
+                                    ),
                                   ),
                                   child: Text(
                                     "Revenue",
                                     style: TextStyle(
                                       fontSize: 10,
-                                      fontWeight: FontWeight.w600,
+                                      fontWeight: FontWeight.w500,
                                       color: selectedOption == "Revenue" ? Colors.black : Colors.grey,
                                     ),
                                   ),
@@ -602,7 +607,7 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                                   style: const TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.w500,
-                                    color: Color(0xff364153),
+                                    color: Color(0xff64748B),
                                   ),
                                 ),
                               ),
@@ -905,9 +910,13 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: Colors.white,
+              border: Border.all(
+                color: const Color(0xffE5E7EB),
+                width: 0.5,
+              ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
+                  color: const Color(0x5258660F).withOpacity(0.06),
                   blurRadius: 5,
                   spreadRadius: 2,
                   offset: const Offset(0, 2),

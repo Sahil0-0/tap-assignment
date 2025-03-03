@@ -200,87 +200,75 @@ class _HomepageState extends State<Homepage> {
     );
   }
 
-  List<TextSpan> highlightSearchText(String text, String query, String valueType) {
-    final matches = RegExp(query.trim(), caseSensitive: false).allMatches(text.trim());
-    if (query.isEmpty || matches.isEmpty) {
-      if (valueType == 'Isin') {
-        return [
-          TextSpan(
-            text: text.substring(0, 8),
-            style: const TextStyle(
-              color: Color(0xFF6A7282),
-              fontWeight: FontWeight.w500,
-              fontSize: 12,
-            ),
-          ),
-          TextSpan(
-            text: text.substring(8),
-            style: const TextStyle(
-              color: Color(0xff1E2939),
-              fontWeight: FontWeight.w500,
-              fontSize: 14,
-            ),
-          ),
-        ];
-      } else {
-        return [
-          TextSpan(
-            text: text,
-            style: const TextStyle(
-              color: Color(0xFF99A1AF),
-              fontSize: 10,
-              fontWeight: FontWeight.w400,
-            ),
-          ),
-        ];
-      }
+  List<InlineSpan> highlightSearchText(String text, String query, String valueType) {
+    if (query.isEmpty) {
+      return [_normalTextSpan(text, valueType)];
     }
 
-    List<TextSpan> spans = [];
+    List<String> searchWords = query.toLowerCase().split(' ');
+    List<InlineSpan> spans = [];
     int start = 0;
 
-    for (var match in matches) {
-      if (match.start > start) {
-        spans.add(
-          TextSpan(
-            text: text.substring(start, match.start),
-            style: TextStyle(
-              color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
-              fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
-              fontSize: valueType == 'Isin' ? 12 : 10,
-            ),
-          ),
-        );
+   
+    List<RegExpMatch> allMatches = [];
+    for (String word in searchWords) {
+      allMatches.addAll(RegExp(RegExp.escape(word), caseSensitive: false).allMatches(text));
+    }
+
+    allMatches.sort((a, b) => a.start.compareTo(b.start));
+
+    for (var match in allMatches) {
+      if (match.start >= start) {
+        if (match.start > start) {
+          spans.add(_normalTextSpan(text.substring(start, match.start), valueType));
+        }
+
+        spans.add(_inlineHighlightedText(text.substring(match.start, match.end), valueType));
+
+        start = match.end;
       }
-
-      spans.add(
-        TextSpan(
-          text: text.substring(match.start, match.end),
-          style: TextStyle(
-            color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
-            backgroundColor: Colors.orange.withOpacity(0.15),
-            fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
-            fontSize: valueType == 'Isin' ? 12 : 10,
-          ),
-        ),
-      );
-
-      start = match.end;
     }
 
     if (start < text.length) {
-      spans.add(
-        TextSpan(
-          text: text.substring(start),
+      spans.add(_normalTextSpan(text.substring(start), valueType));
+    }
+
+    return spans;
+  }
+
+
+  TextSpan _normalTextSpan(String text, String valueType) {
+    return TextSpan(
+      text: text,
+      style: TextStyle(
+        color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
+        fontSize: valueType == 'Isin' ? 12 : 10,
+        fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
+      ),
+    );
+  }
+
+  InlineSpan _inlineHighlightedText(String text, String valueType) {
+    return WidgetSpan(
+      alignment: PlaceholderAlignment.middle,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 2,
+        ),
+        margin: const EdgeInsets.symmetric(horizontal: 2),
+        decoration: BoxDecoration(
+          color: Colors.orange.withOpacity(0.15),
+          borderRadius: BorderRadius.circular(4),
+        ),
+        child: Text(
+          text,
           style: TextStyle(
             color: valueType == 'Isin' ? const Color(0xFF1E2939) : const Color(0xFF99A1AF),
             fontSize: valueType == 'Isin' ? 12 : 10,
             fontWeight: valueType == 'Isin' ? FontWeight.w500 : FontWeight.w400,
           ),
         ),
-      );
-    }
-
-    return spans;
+      ),
+    );
   }
 }

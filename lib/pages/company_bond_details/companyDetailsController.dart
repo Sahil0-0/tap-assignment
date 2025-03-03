@@ -5,9 +5,10 @@ import 'package:http/http.dart' as http;
 class CompanyDetailsController {
   final String apiUrl = 'https://eo61q3zd4heiwke.m.pipedream.net/';
 
+  get financials => null;
+
   Future<CompanyDetailModel> fetchCompanyDetails() async {
     final response = await http.get(Uri.parse(apiUrl));
-    bool isLoading = false;
     if (response.statusCode == 200) {
       return CompanyDetailModel.fromJson(json.decode(response.body));
     } else {
