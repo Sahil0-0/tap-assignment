@@ -7,7 +7,7 @@ class CompanyDetailsController {
 
   Future<CompanyDetailModel> fetchCompanyDetails() async {
     final response = await http.get(Uri.parse(apiUrl));
-
+    bool isLoading = false;
     if (response.statusCode == 200) {
       return CompanyDetailModel.fromJson(json.decode(response.body));
     } else {

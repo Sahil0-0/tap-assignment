@@ -734,6 +734,16 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 groupVertically: true,
               );
             }),
+            extraLinesData: ExtraLinesData(
+              verticalLines: [
+                VerticalLine(
+                  x: 4.5,
+                  color: Colors.grey,
+                  dashArray: [5, 5],
+                  strokeWidth: 1,
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -832,18 +842,8 @@ class _CompanyDetailsPageState extends State<CompanyDetailsPage> {
                 barRods: [
                   BarChartRodData(
                     fromY: 0,
-                    toY: _isAnimated ? 1 : 0,
-                    color: Colors.black,
-                    width: 10,
-                    borderRadius: const BorderRadius.only(
-                      bottomLeft: Radius.circular(2),
-                      bottomRight: Radius.circular(2),
-                    ),
-                  ),
-                  BarChartRodData(
-                    fromY: 0,
                     toY: _isAnimated ? 1.75 : 0,
-                    color: Colors.red.withOpacity(0.3),
+                    color: Colors.blue.withOpacity(0.3),
                     width: 10,
                     borderRadius: const BorderRadius.only(
                       topLeft: Radius.circular(2),
